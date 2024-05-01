@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-'''A module for using the Redis NoSQL data storage.
+'''
+A module for using the Redis NoSQL data storage.
 '''
 import uuid
 import redis
@@ -12,7 +13,8 @@ def count_calls(method: Callable) -> Callable:
     '''
     @wraps(method)
     def invoker(self, *args, **kwargs) -> Any:
-        '''Invokes the given method after incrementing its call counter.
+        '''
+        Invokes the given method after incrementing its call counter.
         '''
         if isinstance(self._redis, redis.Redis):
             self._redis.incr(method.__qualname__)
@@ -25,7 +27,8 @@ def call_history(method: Callable) -> Callable:
     '''
     @wraps(method)
     def invoker(self, *args, **kwargs) -> Any:
-        '''Returns the method's output after storing its inputs and output.
+        '''
+        Returns the method's output after storing its inputs and output.
         '''
         in_key = '{}:inputs'.format(method.__qualname__)
         out_key = '{}:outputs'.format(method.__qualname__)
