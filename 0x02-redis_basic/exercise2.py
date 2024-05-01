@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-'''A module for using the Redis NoSQL data storage.
-'''
+"""A module for using the Redis NoSQL data storage.
+"""
 import uuid
 import redis
 from functools import wraps
@@ -8,24 +8,27 @@ from typing import Any, Callable, Union
 
 
 def count_calls(method: Callable) -> Callable:
-    '''Tracks the number of calls made to a method in a Cache class.
+    '''Tracks d number of calls made 2 a method in a Cache class.
     '''
     @wraps(method)
+
     def invoker(self, *args, **kwargs) -> Any:
-        '''Invokes the given method after incrementing its call counter.
+        '''Invokes method after incrementing its call counter.
         '''
         if isinstance(self._redis, redis.Redis):
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
+
     return invoker
 
 
 def call_history(method: Callable) -> Callable:
-    '''Tracks the call details of a method in a Cache class.
+    '''Tracks call details of a method in a Cache class.
     '''
     @wraps(method)
+
     def invoker(self, *args, **kwargs) -> Any:
-        '''Returns the method's output after storing its inputs and output.
+        '''Returns method's output after storing its inputs & output.
         '''
         in_key = '{}:inputs'.format(method.__qualname__)
         out_key = '{}:outputs'.format(method.__qualname__)
@@ -39,8 +42,9 @@ def call_history(method: Callable) -> Callable:
 
 
 def replay(fn: Callable) -> None:
-    '''Displays the call history of a Cache class' method.
-    '''
+    """
+    Displays call history of a Cache class' method.
+    """
     if fn is None or not hasattr(fn, '__self__'):
         return
     redis_store = getattr(fn.__self__, '_redis', None)
@@ -64,7 +68,7 @@ def replay(fn: Callable) -> None:
 
 
 class Cache:
-    '''Represents an object for storing data in a Redis data storage.
+    '''Represents an object for storing data in a Redis storage.
     '''
     def __init__(self) -> None:
         '''Initializes a Cache instance.
@@ -74,8 +78,9 @@ class Cache:
 
     @call_history
     @count_calls
+
     def store(self, data: Union[str, bytes, int, float]) -> str:
-        '''Stores a value in a Redis data storage and returns the key.
+        '''Stores a value in a Redis data storage and returns key.
         '''
         data_key = str(uuid.uuid4())
         self._redis.set(data_key, data)
